@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""Step 5: build the tabla's data from data/tabla/strokes.json and data/tabla/bols.json.
+
+  - every take: trimmed as in step 4 (tools/tabla_proto/tabla_samples.load), cut at 1.0 s with a 50 ms fade (ElectroNick,
+    step 4), its peak normalised to -1 dBFS (the stroke's level is applied at playback: strokes.json's level_db);
+  - stored as IMA ADPCM 4 bit (tools/tabla_data/adpcm.py): the dayan at the FM-1's rate (its strokes are bright and are
+    retuned by resampling: a 22 kHz storage loses everything above 11 kHz, and 7.7 kHz once retuned down to A3), the
+    bayan at half the rate (its sound lies low: step 5's codec evaluation, DECISIONS.md);
+  - bols: validated (every stroke must exist; at most one stroke per drum; levels 0..1; names unique ignoring case).
+
+Writes tabla/tabla_samples.h and tabla/tabla_bols.h (generated: do not edit), and prints the sizes.
+    ~/.venvs/teentaal/bin/python tools/tabla_data/build_samples.py [--check]
+--check: only validate the JSON files (exit 1 with the reasons)."""
+import json, os, sys
+import numpy as np
+from scipy import signal
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(ROOT, "tools", "tabla_proto"))
+import adpcm
+
+DRUMS = {"dayan": 0, "bayan": 1}
+CUT_S, FADE_S, PEAK = 1.0, 0.05, 10 ** (-1 / 20)
+
+
+class DataError(Exception):
+    pass
+
+
+def read_json(name):
+    with open(os.path.join(ROOT, "data", "tabla", name)) as f:
+        return json.load(f)
+
+
+def validate(strokes, bols):
+    errs = []
+    for k, v in strokes.items():
+        if k.startswith("_"):
+            continue
+        if not k.isidentifier() or k.upper() != k:
+            errs.append(f"strokes.json: stroke name '{k}': upper-case letters, digits and _ only")
+        if v.get("drum") not in DRUMS:
+            errs.append(f"strokes.json: {k}: drum must be one of {sorted(DRUMS)}")
+        if not v.get("takes"):
+            errs.append(f"strokes.json: {k}: no takes")
+        if not -24 <= v.get("level_db", 0) <= 6:
+            errs.append(f"strokes.json: {k}: level_db outside -24..6")
+    seen = {}
+    for b, parts in bols.items():
+        if b.startswith("_"):
+            continue
+        if not b.replace("'", "").isalpha():
+            errs.append(f"bols.json: bol '{b}': letters only")
+        if b.lower() in seen:
+            errs.append(f"bols.json: bol '{b}' repeats '{seen[b.lower()]}' (names are compared ignoring case)")
+        seen[b.lower()] = b
+        if not 1 <= len(parts) <= 2:
+            errs.append(f"bols.json: {b}: one or two strokes")
+        drums = []
+        for p in parts:
+            if len(p) != 2 or p[0] not in strokes or p[0].startswith("_"):
+                errs.append(f"bols.json: {b}: unknown stroke {p[0] if p else p!r} (strokes.json has: "
+                            + ", ".join(k for k in strokes if not k.startswith('_')) + ")")
+                continue
+            if not 0 < p[1] <= 1:
+                errs.append(f"bols.json: {b}: level {p[1]} outside 0..1")
+            drums.append(strokes[p[0]]["drum"])
+        if len(drums) != len(set(drums)):
+            errs.append(f"bols.json: {b}: two strokes on the same drum")
+    if errs:
+        raise DataError("\n".join(errs))
+
+
+def prepare(name, drum):
+    import tabla_samples as TS                    # (scipy, the pack: only when building)
+    x = TS.load(name)
+    n = int(CUT_S * TS.FS)
+    if len(x) > n:
+        f = int(FADE_S * TS.FS)
+        x = x[:n].copy()
+        x[n - f:] *= np.linspace(1, 0, f)
+    x = x / np.max(np.abs(x)) * PEAK
+    if drum == "bayan":
+        x = signal.resample_poly(x, 1, 2)
+    q = np.clip(np.round(x * 32767), -32768, 32767).astype(np.int16)
+    return q
+
+
+def fnv(dec):
+    h = 2166136261
+    for v in dec.astype(np.int64):
+        h = ((h ^ (int(v) & 0xFFFF)) * 16777619) & 0xFFFFFFFF
+    return h
+
+
+def main():
+    strokes, bols = read_json("strokes.json"), read_json("bols.json")
+    try:
+        validate(strokes, bols)
+    except DataError as e:
+        print(e, file=sys.stderr)
+        sys.exit(1)
+    if "--check" in sys.argv:
+        print("data/tabla: OK")
+        return
+    snames = [k for k in strokes if not k.startswith("_")]
+    blob, takes, srows = bytearray(), [], []
+    for s in snames:
+        v = strokes[s]
+        first = len(takes)
+        for t in v["takes"]:
+            q = prepare(t, v["drum"])
+            data, idx = adpcm.encode(q)
+            dec = adpcm.decode(data, len(q), idx)
+            takes.append((t, len(blob), len(q), idx, fnv(dec), s))
+            blob += data
+            while len(blob) & 3:
+                blob.append(0)
+        srows.append((s, DRUMS[v["drum"]], first, len(v["takes"]), 10 ** (v.get("level_db", 0) / 20)))
+
+    out = os.path.join(ROOT, "tabla", "tabla_samples.h")
+    with open(out, "w") as f:
+        f.write("/* tabla_samples.h — GENERATED by tools/tabla_data/build_samples.py from data/tabla/strokes.json: do not "
+                "edit.\n * The recordings: Freesound pack \"tabla bols\" by mmiron (CC0). IMA ADPCM, low nibble first; the "
+                "dayan at DSP_FS,\n * the bayan at DSP_FS / 2. Included by tabla/tabla.c only. */\n#pragma once\n"
+                "#include <stdint.h>\n\n")
+        f.write("enum {\n" + "".join(f"    TABLA_S_{s},\n" for s in snames) + "    TABLA_NSTROKE\n};\n\n")
+        f.write(f"#define TABLA_NTAKE {len(takes)}\n#define TABLA_ADPCM_BYTES {len(blob)}\n\n")
+        f.write("typedef struct { uint32_t off, n, hash; uint8_t idx, stroke; uint16_t pad; } tabla_take_t;\n")
+        f.write("typedef struct { const char *name; uint8_t drum, first, ntakes, pad; float gain; } tabla_stroke_t;\n\n")
+        f.write("static const tabla_take_t TABLA_TAKE[TABLA_NTAKE] = {\n")
+        for t, off, n, idx, h, s in takes:
+            f.write(f"    {{{off}u, {n}u, 0x{h:08x}u, {idx}, TABLA_S_{s}, 0}},   /* {t} */\n")
+        f.write("};\n\nstatic const tabla_stroke_t TABLA_STROKE[TABLA_NSTROKE] = {\n")
+        for s, d, first, nt, g in srows:
+            f.write(f"    {{\"{s}\", {d}, {first}, {nt}, 0, {g:.6f}f}},\n")
+        f.write("};\n\nstatic const uint8_t TABLA_ADPCM[TABLA_ADPCM_BYTES] = {\n")
+        for i in range(0, len(blob), 24):
+            f.write("    " + ",".join(str(b) for b in blob[i:i + 24]) + ",\n")
+        f.write("};\n")
+
+    bnames = [b for b in bols if not b.startswith("_")]
+    out2 = os.path.join(ROOT, "tabla", "tabla_bols.h")
+    with open(out2, "w") as f:
+        f.write("/* tabla_bols.h — GENERATED by tools/tabla_data/build_samples.py from data/tabla/bols.json: do not edit.\n"
+                " * A bol: one or two strokes (at most one per drum) played together, each with a level (0..255). */\n"
+                "#pragma once\n#include <stdint.h>\n#include \"tabla/tabla_strokes.h\"\n\n")
+        f.write(f"#define TABLA_NBOL {len(bnames)}\n\n")
+        f.write("typedef struct { const char *name; uint8_t n, stroke[2], level[2], pad[3]; } tabla_bol_t;\n\n")
+        f.write("static const tabla_bol_t TABLA_BOL[TABLA_NBOL] = {\n")
+        for b in bnames:
+            p = bols[b] + [[None, 0]] * (2 - len(bols[b]))
+            st = [f"TABLA_S_{x[0]}" if x[0] else "0" for x in p]
+            lv = [int(round(x[1] * 255)) for x in p]
+            f.write(f"    {{\"{b}\", {len(bols[b])}, {{{st[0]}, {st[1]}}}, {{{lv[0]}, {lv[1]}}}, {{0, 0, 0}}}},\n")
+        f.write("};\n")
+
+    out3 = os.path.join(ROOT, "tabla", "tabla_strokes.h")
+    with open(out3, "w") as f:
+        f.write("/* tabla_strokes.h — GENERATED by tools/tabla_data/build_samples.py: the stroke ids. Do not edit. */\n"
+                "#pragma once\n\nenum {\n" + "".join(f"    TABLA_S_{s},\n" for s in snames) + "    TABLA_NSTROKE\n};\n")
+    # (tabla_samples.h repeats the enum for itself: keep one copy)
+    txt = open(out).read().replace("enum {\n" + "".join(f"    TABLA_S_{s},\n" for s in snames) + "    TABLA_NSTROKE\n};\n",
+                                   "#include \"tabla/tabla_strokes.h\"\n")
+    open(out, "w").write(txt)
+
+    by = {0: 0, 1: 0}
+    for t, off, n, idx, h, s in takes:
+        by[DRUMS[strokes[s]["drum"]]] += (n + 1) // 2
+    print(f"{len(snames)} strokes, {len(takes)} takes, {len(bnames)} bols; ADPCM {len(blob)} B "
+          f"({len(blob) / 1024:.1f} KB: dayan {by[0] / 1024:.1f}, bayan {by[1] / 1024:.1f})")
+
+
+if __name__ == "__main__":
+    main()

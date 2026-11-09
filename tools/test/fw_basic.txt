@@ -1,0 +1,157 @@
+# Host simulator scenario of the step 3 firmware (tools/fw.sh --host). MASTER sits at half: gain 0.25 (fm1-base APP_GAIN).
+wait 2500
+expect cpu2 1
+expect sa_cents -300
+expect tan_sa -1500
+expect register 1
+expect tan_on 0
+expect peak 0
+# the tanpura on: SEQ
+tap SEQ
+wait 3000
+expect tan_on 1
+expect peak >200000
+expect jobs >400
+shot main_tanpura_on.png
+# Sa: SEL + the G key (key 2 = G3), then a cent up and down on PRESET
+press SEL
+tapkey 2
+release SEL
+wait 200
+expect sa_cents -500
+expect tan_sa -1700
+turn PRESET 7
+wait 100
+expect sa_cents -493
+turn PRESET -7
+# SEL + OCT+: Sa an octave up (G4: the tanpura then at G3)
+press SEL
+tap OCT+
+release SEL
+wait 200
+expect sa_cents 700
+expect tan_sa -500
+# jawari on ALGORITHM, the tanpura's volume on KNOB2
+turn ALGO 10
+turn K2 -4
+wait 200
+expect jawari 70
+expect tan_vol 80
+# the tone: ARP, its octave up
+tap ARP
+tap OCT+
+wait 300
+expect ref_on 1
+expect octave 1
+# EDIT: the first string to Ma (first row, two steps down), the register off (row 5)
+tap EDIT
+wait 100
+expect page 1
+turn PRESET -2
+turn SELECT 5
+turn PRESET -1
+wait 300
+expect first 5
+expect register 0
+shot edit.png
+tap HOME
+wait 100
+expect page 0
+shot back_to_main.png
+# off: SEQ, ARP
+tap SEQ
+tap ARP
+wait 1500
+expect tan_on 0
+expect ref_on 0
+expect peak 0
+# the tabla (step 7): PLAY, Teentaal at 120 from the sam
+expect taal_on 0
+expect taal 0
+expect mpm 120
+tap PLAY
+wait 1200
+expect taal_on 1
+expect peak >100000
+shot main_tabla_on.png
+# tempo on KNOB1 (SEL+KNOB1 by tens), the tabla's volume on KNOB3
+turn K1 5
+press SEL
+turn K1 3
+release SEL
+wait 100
+expect mpm 155
+turn K3 -2
+wait 100
+expect tab_vol 90
+# the taal on SELECT while playing: Ektaal waits for the end of the cycle (16 matras at 155: 6.2 s)
+turn SELECT 1
+wait 300
+expect taal 1
+expect taal_now 0
+shot main_next_taal.png
+wait 6500
+expect taal_now 1
+shot main_ektaal.png
+# the tabla's irregularity: EDIT, the last row
+tap EDIT
+turn SELECT 3
+turn PRESET -2
+wait 200
+expect tabla_human 20
+shot edit_tabla.png
+tap HOME
+# off: PLAY; the strokes ring out
+tap PLAY
+wait 2500
+expect taal_on 0
+expect peak 0
+# step 8: a key alone sounds the tone on its swara while held (Sa is G4 here: key 14 = G4 = Sa, key 16 = A4 = Re)
+expect unsaved 1
+expect octave 1
+key 14 down
+wait 200
+expect ref_on 1
+expect swara 0
+expect octave 0
+expect kt_key 14
+key 16 down
+wait 200
+expect swara 2
+leds
+key 16 up
+wait 100
+expect swara 0
+key 14 up
+wait 300
+expect ref_on 0
+expect octave 1
+expect kt_key -1
+# the first string's fine tuning (EDIT, row 1), then SAVE, a change, and a power cycle: the saved values come back
+tap EDIT
+turn SELECT -7
+turn PRESET 7
+wait 100
+expect fine0 7
+shot edit_fine.png
+tap HOME
+tap SAVE
+wait 300
+expect unsaved 0
+shot saved.png
+turn K1 3
+wait 100
+expect mpm 158
+expect unsaved 1
+power
+wait 2500
+expect loaded 1
+expect mpm 155
+expect fine0 7
+expect first 5
+expect tab_vol 90
+expect sa_cents 700
+expect tan_on 0
+expect taal_on 0
+expect unsaved 0
+shot after_power.png

@@ -1,0 +1,12 @@
+wait 2500
+expect frames >0
+expect nosc 8
+expect fpu_ok 1
+expect rps >160
+expect peak >300000
+shot q15.png
+tap SEL
+wait 1500
+expect mode 1
+expect peak >300000
+shot float.png

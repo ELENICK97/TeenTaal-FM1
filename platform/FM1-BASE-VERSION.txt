@@ -1,0 +1,5 @@
+fm1-base 317cb86cc60d6286fa80a02743e94e6a60ff842d (2026-11-06)
+felucca-bsp 5b0879bfadc69a17dbebb917fb6b86d516f19c44 (2026-11-06)
+Exported with git archive from https://github.com/charlesvestal/fm1-base and https://github.com/hugelton/felucca-bsp. MPL-2.0. Do not edit except for the local changes listed below, each recorded in DECISIONS.md.
+Local changes (MPL-2.0: published with the firmware's source; DECISIONS.md "Modifica locale B"):
+- bsp/boards/fm1/fm1_audio.h: fm1_audio_init_checked also accepts an audio PLL never set (both words 0), the state fm1-emu leaves; every other non-stock value is refused as upstream.

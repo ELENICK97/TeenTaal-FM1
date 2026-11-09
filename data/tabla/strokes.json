@@ -1,0 +1,15 @@
+{
+  "_comment": "The tabla's strokes: each a set of takes (recordings) from the Freesound pack 'tabla bols' by mmiron (CC0, docs/references/tabla_mmiron/). drum: dayan (retuned to Sa) or bayan (its own pitch). level_db: the stroke's level against the others (the pack's files are each normalised to full scale, so the balance between strokes is set here, by ear). Built by tools/tabla_data/build_samples.py into tabla/tabla_samples.h.",
+  "NA":   {"drum": "dayan", "takes": ["na", "na_sharp"],                 "level_db": 0},
+  "TIN":  {"drum": "dayan", "takes": ["na-open"],                        "level_db": -1, "_note": "the pack has no Tin: na-open stands in (ElectroNick, step 4)"},
+  "TUN":  {"drum": "dayan", "takes": ["tun", "tun_2"],                   "level_db": -2},
+  "TE":   {"drum": "dayan", "takes": ["te", "te_middlefinger"],          "level_db": -6},
+  "TI":   {"drum": "dayan", "takes": ["te_2"],                           "level_db": -6},
+  "NE":   {"drum": "dayan", "takes": ["te_ne"],                          "level_db": -6},
+  "RE":   {"drum": "dayan", "takes": ["re"],                             "level_db": -6},
+  "TAS":  {"drum": "dayan", "takes": ["tas", "tas_3"],                   "level_db": -3, "_note": "the pack's 'tas': a closed stroke, not mapped to a bol by default"},
+  "DHEC": {"drum": "dayan", "takes": ["dhec"],                           "level_db": -4, "_note": "the pack's 'dhec' (closed): not mapped to a bol by default"},
+  "GE":   {"drum": "bayan", "takes": ["ghe_2", "ghe_3", "ghe_4", "ghe_7", "ghe_8"], "level_db": -2},
+  "GEM":  {"drum": "bayan", "takes": ["ghe_5", "ghe_6"],                 "level_db": -2, "_note": "Ge with the wrist's glide (meend), the long takes"},
+  "KE":   {"drum": "bayan", "takes": ["ke", "ke_2", "ke_3"],             "level_db": -5}
+}

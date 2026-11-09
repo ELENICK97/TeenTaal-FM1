@@ -1,0 +1,9 @@
+{
+  "name": "Chautaal",
+  "matras": 12,
+  "vibhag": [2, 2, 2, 2, 2, 2],
+  "marks": ["X", "0", "2", "0", "3", "4"],
+  "theka": ["Dha","Dha", "Din","Ta", "Ki-Ta","Dha", "Din","Ta", "Ti-Ta","Ka-Ta", "Ga-Di","Ga-Na"],
+  "tempo": 120,
+  "source": "NIOS, Hindustani Music practical book 2, ch. 4 (nios.ac.in/media/documents/Hindustani_Music_242/hindustanimusicpracticalbook2/ch_HMB2-4.pdf); tablatheka.com/2022/01/chautaal-12-beats.html. Traditionally played on the pakhawaj"
+}

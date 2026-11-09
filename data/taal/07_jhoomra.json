@@ -1,0 +1,10 @@
+{
+  "name": "Jhoomra",
+  "matras": 14,
+  "vibhag": [3, 4, 3, 4],
+  "marks": ["X", "2", "0", "3"],
+  "theka": ["Dhin","S-Dha","Ti-Ra-Ki-Ta", "Dhin","Dhin","Dha-Ge","Ti-Ra-Ki-Ta",
+            "Tin","S-Ta","Ti-Ra-Ki-Ta", "Dhin","Dhin","Dha-Ge","Ti-Ra-Ki-Ta"],
+  "tempo": 60,
+  "source": "https://en.wikipedia.org/wiki/Jhoomra; tablatheka.com/2022/01/jhumra-taal-14-beats.html. A vilambit taal: played slow"
+}

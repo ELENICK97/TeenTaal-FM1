@@ -1,0 +1,23 @@
+# golden renders (tools/test/regress.c): name, FNV-1a 64 of the samples.
+# Rewritten by GOLDEN_UPDATE=1 tools/test/run_tests.sh -- only for an intended change of the sound.
+render/idle 221e6afaba8f4383
+render/ref_sa_c4 b44b974b625f52f7
+render/ref_sa_cs3 3eebce14ef4c5e67
+render/ref_sa_cs3_plus37 291383c70b7dc213
+render/ref_a432_sa_d3 c44b4d7fd521f9eb
+render/ref_pa_tar d2ef20f760a383af
+render/ref_ni_k_mandra 359c0d34292c83cf
+render/ref_onoff 7bf4d651c9f5e0bf
+render/ref_changes bca62885fe75784b
+render/tan_A2_default 380d04eab98573db
+render/tan_Fs2_j0_Ma 4d3e64d6821dfd63
+render/tan_G4_j100_Ni 6b921e29d91052cb
+render/tan_retune aca0bf9711deecbb
+render/tan_onoff 7827837d66cf8763
+render/tab_bols_A3 c9bdd7687fc6b223
+render/tab_drut_Fs4 5bf5301b4a4bd9f3
+render/tab_stop_retune d8daf1450ca90e1f
+render/taal_teentaal_160 dd6b2f8db0624827
+render/taal_switch_tempo d051f2c49f7c8dab
+render/taal_drut_ektaal_600 f809c5fffdcb9b0b
+render/taal_teentaal_tanpura c14aa37634fb92a7

@@ -1,0 +1,51 @@
+cff-version: 1.2.0
+message: "If you use TeenTaal-FM1, please cite it as below and link the repository."
+title: "TeenTaal-FM1: an Indian classical music practice firmware for the M-VAVE FM-1"
+authors:
+  - alias: "ElectroNick"
+    website: "https://github.com/ELENICK97"
+repository-code: "https://github.com/ELENICK97/TeenTaal-FM1"
+url: "https://github.com/ELENICK97/TeenTaal-FM1"
+license: Apache-2.0
+version: "1.0"
+date-released: "2026-11-08"
+keywords:
+  - tanpura
+  - tabla
+  - taal
+  - Indian classical music
+  - M-VAVE FM-1
+  - firmware
+references:
+  - type: conference-paper
+    title: "A Real-Time Synthesis Oriented Tanpura Model"
+    authors:
+      - family-names: "van Walstijn"
+        given-names: "Maarten"
+      - family-names: "Bridges"
+        given-names: "Jamie"
+      - family-names: "Mehes"
+        given-names: "Sandor"
+    conference:
+      name: "19th International Conference on Digital Audio Effects (DAFx-16)"
+    year: 2016
+  - type: software
+    title: "fm1-base"
+    authors:
+      - family-names: "Vestal"
+        given-names: "Charles"
+    repository-code: "https://github.com/charlesvestal/fm1-base"
+    license: MPL-2.0
+  - type: software
+    title: "felucca-bsp"
+    authors:
+      - family-names: "Kuroshita"
+        given-names: "Leo"
+    repository-code: "https://github.com/hugelton/felucca-bsp"
+    license: MPL-2.0
+  - type: sound-recording
+    title: "tabla bols (Freesound pack 8162)"
+    authors:
+      - alias: "mmiron"
+    url: "https://freesound.org/people/mmiron/packs/8162/"
+    license: CC0-1.0

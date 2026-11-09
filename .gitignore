@@ -1,0 +1,27 @@
+# build outputs
+build/
+build-host/
+release/
+__pycache__/
+*.o
+*.pyc
+
+# large or third-party material not redistributed here (see CREDITS.md)
+# - clones of other projects used as references
+refs/
+# - development renders (hundreds of MB); short demos are in docs/audio/
+renders/
+# - a dataset (CC BY 4.0) evaluated and not used
+docs/references/tabla_fourway/
+# - the paper authors' sound examples (no licence to redistribute)
+docs/references/dafx16a/
+# - the DAFx-16 paper: cite it, download it from the proceedings
+docs/references/*.pdf
+# - the sample pack as downloaded (its WAVs are in docs/references/tabla_mmiron/wav/)
+docs/references/tabla_mmiron/*.zip
+# - Windows download marks
+*:Zone.Identifier
+
+# the step 0 probe's build and its package (never tested: not to be installed)
+tools/step0/cpuprobe/build/
+tools/step0/*.fwsc

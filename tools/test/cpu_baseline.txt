@@ -1,0 +1,23 @@
+# host instructions per sample of engine_render (tools/test/regress.c), gcc -O2 under WSL2.
+# The check allows +25 %. Rewritten by BUDGET_UPDATE=1 tools/test/run_tests.sh.
+cpu/idle 63.1
+cpu/ref_sa_c4 78.3
+cpu/ref_sa_cs3 78.3
+cpu/ref_sa_cs3_plus37 78.3
+cpu/ref_a432_sa_d3 78.3
+cpu/ref_pa_tar 78.3
+cpu/ref_ni_k_mandra 78.3
+cpu/ref_onoff 72.6
+cpu/ref_changes 75.4
+cpu/tan_A2_default 4655.0
+cpu/tan_Fs2_j0_Ma 5276.9
+cpu/tan_G4_j100_Ni 1595.7
+cpu/tan_retune 4139.0
+cpu/tan_onoff 3084.9
+cpu/tab_bols_A3 183.8
+cpu/tab_drut_Fs4 197.6
+cpu/tab_stop_retune 107.3
+cpu/taal_teentaal_160 232.5
+cpu/taal_switch_tempo 181.4
+cpu/taal_drut_ektaal_600 217.6
+cpu/taal_teentaal_tanpura 4812.3

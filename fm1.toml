@@ -1,0 +1,19 @@
+# TeenTaal-FM1: fm1-base build settings (platform/fm1-base/tools/build.py). The project's root is the APP_DIR.
+name = "TEENTAAL"
+id_prefix = "FM-1_77"          # package identity: dev FM-1_7700 (unused by the firmwares in refs/ and awesome-fm-1)
+usb_manufacturer = "TeenTaal-FM1"
+usb_product = "TEENTAAL FM-1"
+o2 = ["dsp/*.c", "reftone/*.c", "tanpura/*.c", "tabla/*.c", "taal/*.c", "mixer/*.c"]   # the DSP, at -O2
+words = "words.tsv"
+licence = "Apache-2.0"         # this project's own files (NOTICE: credit to ElectroNick); fm1-base and felucca-bsp stay MPL-2.0
+author = "ElectroNick"
+repo = "https://github.com/ELENICK97/TeenTaal-FM1"
+install = "https://github.com/ELENICK97/TeenTaal-FM1/blob/main/INSTALL.md"
+tagline = "Indian classical music practice: tanpura, tabla with 10 taals, reference tone"
+description = "A practice companion for Indian classical music: a physically modelled tanpura (four strings, jawari, tuning in cents), recorded tabla playing ten taals at any tempo from 20 to 600 matras a minute, with sam and khali on the screen, and a reference tone on any swara. AI-generated (Claude); tested in emulators only: use at your own risk."
+tags = ["drum-machine", "utility"]
+screenshot = "docs/img/screen.png"
+credits = "Built on fm1-base by Charles Vestal and felucca-bsp by Leo Kuroshita (MPL-2.0); tabla samples by mmiron (CC0)."
+cpu2 = true                    # the second core renders the tanpura (step 2b/3, DECISIONS.md)
+cpu2_fallback = true           # if it fails: one core until power-off (the tanpura on the first core), not a restart
+vendored = ["platform/", "refs/", "tools/step0/"]   # not ours: fm1-base (scanned in its own place), reference clones, the step 0 probe

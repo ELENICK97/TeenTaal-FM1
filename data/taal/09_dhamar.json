@@ -1,0 +1,9 @@
+{
+  "name": "Dhamar",
+  "matras": 14,
+  "vibhag": [5, 2, 3, 4],
+  "marks": ["X", "2", "0", "3"],
+  "theka": ["Ka","Dhi","Te","Dhi","Te", "Dha","S", "Ga","Ti","Te", "Ti","Te","Ta","S"],
+  "tempo": 120,
+  "source": "https://en.wikipedia.org/wiki/Dhamar_(music); tablatheka.com/2022/01/dhamar-taal-14-beats.html. Variant: 'Ta' for 'Te'. Traditionally played on the pakhawaj"
+}

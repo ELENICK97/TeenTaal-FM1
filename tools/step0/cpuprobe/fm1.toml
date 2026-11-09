@@ -1,0 +1,8 @@
+# Step 0 CPU probe (tools/build.py): not a release, never for hardware until it has run in the emulator
+name = "CPUPROBE"
+id_prefix = "FM-1_77"
+usb_manufacturer = "TeenTaal-FM1"
+usb_product = "CPUPROBE FM-1"
+o2 = ["probe_dsp.c"]
+words = "words.tsv"
+licence = "MPL-2.0"

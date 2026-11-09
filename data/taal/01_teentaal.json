@@ -1,0 +1,10 @@
+{
+  "name": "Teentaal",
+  "matras": 16,
+  "vibhag": [4, 4, 4, 4],
+  "marks": ["X", "2", "0", "3"],
+  "theka": ["Dha","Dhin","Dhin","Dha", "Dha","Dhin","Dhin","Dha",
+            "Dha","Tin","Tin","Ta", "Ta","Dhin","Dhin","Dha"],
+  "tempo": 160,
+  "source": "The standard theka (CLAUDE.md §7); D. Courtney, chandrakantha.com, Teentaal"
+}
